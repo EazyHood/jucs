@@ -1,0 +1,29 @@
+name: Validate jucs 89
+on:
+  push:
+    branches: [validate-89-20261112]
+permissions:
+  contents: read
+jobs:
+  candidate:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      matrix:
+        os: [ubuntu-24.04]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 4735bc6e6c3430359d3dd7541b3203e8b0be1acb
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Run complete verification on the candidate
+        run: mvn --errors --batch-mode clean install -Pqulice
